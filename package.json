@@ -1,10 +1,10 @@
 {
-  "name": "vanillajs-template",
-  "description": "Telegram Mini Apps application template using JavaScript.",
+  "name": "vanillajs-tsdk-template",
+  "description": "Telegram Mini Apps application template using JavaScript and Telegram SDK.",
   "private": true,
   "version": "0.0.1",
   "main": "index.html",
-  "homepage": "https://telegram-mini-apps.github.io/vanillajs-template",
+  "homepage": "https://telegram-mini-apps.github.io/vanillajs-tsdk-template",
   "scripts": {
     "deploy": "gh-pages -d dist",
     "serve": "serve ./dist",

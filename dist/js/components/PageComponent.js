@@ -1,13 +1,11 @@
-class PageComponent {
-  constructor(page) {
-    this.page = page;
-  }
-
-  /**
-   * @param {HTMLElement} root
-   * @returns {void}
-   */
-  render(root) {
-    $(root).empty().append(this.page.element());
-  }
+function PageComponent(page) {
+  this.page = page;
 }
+
+/**
+ * @param {HTMLElement} root
+ * @returns {void}
+ */
+PageComponent.prototype.render = function(root) {
+  $(root).empty().append(this.page.element());
+};

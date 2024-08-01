@@ -1,5 +1,7 @@
 function filterChildren(children) {
-  return children.filter(c => c !== undefined && c !== null && typeof c !== 'boolean');
+  return children.filter(function(c) {
+    return c !== undefined && c !== null && typeof c !== 'boolean';
+  });
 }
 
 function toArray(elem) {

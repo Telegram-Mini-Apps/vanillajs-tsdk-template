@@ -1,70 +1,66 @@
-(async () => {
-  // Uncomment next line for local development outside Telegram Mini App
-  // mockEnv();
+var tonConnectUI = initTonConnectUI();
 
-  const launchParams = window.telegramApps.sdk.retrieveLaunchParams();
+var routes = [
+  { pathname: '/', Page: HomePage },
+  { pathname: '/init-data', Page: InitDataPage, title: 'Init Data' },
+  { pathname: '/theme-params', Page: ThemeParamsPage, title: 'Theme Params' },
+  { pathname: '/launch-params', Page: LaunchParamsPage, title: 'Launch Params' },
+  {
+    pathname: '/ton-connect',
+    Page: TonConnectPage,
+    title: 'TON Connect',
+    icon: window.location.origin + window.location.pathname + 'ton.svg'
+  },
+];
 
-  // Launch eruda and enable SDK debug mode, if debug mode was requested outside.
-  const debug = launchParams.startParam === 'debug';
-  if (debug) {
-    window.telegramApps.sdk.setDebug(debug);
+var root = document.getElementById('root');
+var appContext = {
+  getWebApp: function() {
+    return window.Telegram.WebApp;
+  },
+  tonConnectUI: tonConnectUI,
+  routes: routes
+};
+var prevPage;
+
+appContext.getWebApp().BackButton.onClick(goBack);
+
+window.addEventListener('hashchange', function() {
+  var path = window.location.hash.slice(1);
+  renderCurrentRoute(path);
+  updateBackButton(path);
+});
+
+renderCurrentRoute(window.location.hash.slice(1));
+
+function renderCurrentRoute(path) {
+  var route = routes.find(function(r) { return r.pathname === path; });
+  if (!route) {
+    window.location.hash = '#/';
+    return;
   }
-
-  // The web version of Telegram is capable of sending some specific CSS styles we would
-  // like to catch.
-  if (window.telegramApps.sdk.isIframe()) {
-    window.telegramApps.sdk.initWeb(true);
+  if (prevPage && typeof prevPage.destroy === 'function') {
+    prevPage.destroy();
   }
+  prevPage = new route.Page(appContext);
+  if (typeof prevPage.init === 'function') {
+    prevPage.init();
+  }
+  prevPage.render(root);
+}
 
-  const {
-    miniApp,
-    viewport,
-    utils,
-    themeParams,
-    initData,
-  } = await initComponents();
-  const navigator = await initNavigator();
-  const tonConnectUI = initTonConnectUI();
+function goBack() {
+  window.history.go(-1);
+}
 
-  const routes = [
-    { pathname: '/', Page: HomePage },
-    { pathname: '/init-data', Page: InitDataPage, title: 'Init Data' },
-    { pathname: '/theme-params', Page: ThemeParamsPage, title: 'Theme Params' },
-    { pathname: '/launch-params', Page: LaunchParamsPage, title: 'Launch Params' },
-    {
-      pathname: '/ton-connect',
-      Page: TonConnectPage,
-      title: 'TON Connect',
-      icon: `${window.location.origin}${window.location.pathname}ton.svg`,
-    },
-  ];
-
-  const root = document.getElementById('root');
-  const appContext = {
-    initData,
-    launchParams,
-    miniApp,
-    navigator,
-    themeParams,
-    utils,
-    viewport,
-    tonConnectUI,
-    routes,
-  };
-  let prevPage;
-
-  function renderCurrentRoute() {
-    const route = routes.find(r => r.pathname === navigator.pathname);
-    if (!route) {
-      navigator.replace('/');
-      return;
+function updateBackButton(path) {
+  if (path === '/') {
+    if (appContext.getWebApp().BackButton.isVisible) {
+      appContext.getWebApp().BackButton.hide();
     }
-    prevPage && prevPage.destroy && prevPage.destroy();
-    prevPage = new route.Page(appContext);
-    prevPage.init && prevPage.init();
-    prevPage.render(root);
+  } else {
+    if (!appContext.getWebApp().BackButton.isVisible) {
+      appContext.getWebApp().BackButton.show();
+    }
   }
-
-  navigator.on('change', renderCurrentRoute);
-  renderCurrentRoute();
-})();
+}

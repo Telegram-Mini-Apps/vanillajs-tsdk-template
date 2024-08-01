@@ -1,32 +1,33 @@
-class Link {
-  constructor({ href, class: className }, context) {
-    const targetUrl = new URL(href, window.location.toString());
-    const currentUrl = new URL(window.location.toString());
-    const isExternal = targetUrl.protocol !== currentUrl.protocol
-      || targetUrl.host !== currentUrl.host;
+function Link(options, context) {
+  var href = options.href;
+  var className = options.class;
+  
+  var targetUrl = new URL(href, window.location.toString());
+  var currentUrl = new URL(window.location.toString());
+  var isExternal = targetUrl.protocol !== currentUrl.protocol || targetUrl.host !== currentUrl.host;
 
-    this.el = $('<a/>')
-      .attr('class', 'link')
-      .addClass(className ?? '')
-      .attr('href', isExternal ? href : context.navigator.renderPath(href));
+  this.el = $('<a/>')
+    .attr('class', 'link')
+    .addClass(className || '')
+    .attr('href', isExternal ? href : '#' + href);
 
-    if (isExternal) {
-      this.el.on('click', (e) => {
-        e.preventDefault();
-        context.utils.openLink(targetUrl.toString());
-      });
-    }
-  }
-
-  appendChild(...children) {
-    this.el.append(...filterChildren(children));
-    return this;
-  }
-
-  /**
-   * @returns {HTMLAnchorElement}
-   */
-  element() {
-    return this.el[0];
+  if (isExternal) {
+    this.el.on('click', function(e) {
+      e.preventDefault();
+      context.getWebApp().openLink(targetUrl.toString());
+    });
   }
 }
+
+Link.prototype.appendChild = function() {
+  var children = Array.prototype.slice.call(arguments);
+  this.el.append.apply(this.el, filterChildren(children));
+  return this;
+};
+
+/**
+ * @returns {HTMLAnchorElement}
+ */
+Link.prototype.element = function() {
+  return this.el[0];
+};

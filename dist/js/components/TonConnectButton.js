@@ -1,17 +1,18 @@
-class TonConnectButton {
-  /**
-   * @param {{ id: string, class?: string }}
-   */
-  constructor({ id, class: className }) {
-    this.el = $('<div/>')
-      .addClass(className ?? '')
-      .append($('<div style="width: fit-content;"/>').attr('id', id));
-  }
-
-  /**
-   * @returns {HTMLDivElement}
-   */
-  element() {
-    return this.el[0]
-  }
+/**
+ * @param {{ id: string, class?: string }} options
+ */
+function TonConnectButton(options) {
+  var id = options.id;
+  var className = options.class;
+  
+  this.el = $('<div/>')
+    .addClass(className || '')
+    .append($('<div style="width: fit-content;"/>').attr('id', id));
 }
+
+/**
+ * @returns {HTMLDivElement}
+ */
+TonConnectButton.prototype.element = function() {
+  return this.el[0];
+};

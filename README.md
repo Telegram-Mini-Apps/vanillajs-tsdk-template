@@ -1,7 +1,7 @@
 # Vanilla JS example
 
 > ⚠️ Please, avoid using vanilla JavaScript if possible on Telegram Mini Apps
-> platform. It is better to use ES modules at least. [Learn more](#about-iife).
+> platform. It is better to use ES modules at least.
 
 This example shows how developer could use Vanilla JavaScript to start developing at
 Telegram Mini Apps platform.
@@ -10,7 +10,7 @@ This template demonstrates how developers can implement an application on the Te
 Mini Apps platform using the following technologies and libraries
 
 - [TON Connect](https://docs.ton.org/develop/dapps/ton-connect/overview)
-- [@telegram-apps SDK](https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk)
+- [Telegram SDK](https://core.telegram.org/bots/webapps#initializing-mini-apps)
 
 > This boilerplate was created using [pnpm](https://pnpm.io/). Therefore, it is required to use
 > it for this project as well.
@@ -73,14 +73,8 @@ devices in the same network with the current device.
 To view the application, you need to open the `Local`
 link (`http://localhost:3000` in this example) in your browser.
 
-It is important to note that some libraries in this template, such as `@telegram-apps/sdk`, are not
+It is important to note that some libraries in this template, such as Telegram SDK, are not
 intended for use outside of Telegram.
-
-Nevertheless, they appear to function properly. This is because the `dist/js/mockEnv.ts` file, which is
-imported in the application's entry point (`dist/index.html`), employs the `mockTelegramEnv` function
-to simulate the Telegram environment. This trick convinces the application that it is running in a
-Telegram-based environment. Therefore, be cautious not to use this function in production mode
-unless you fully understand its implications.
 
 ### Run Inside Telegram
 
@@ -107,69 +101,6 @@ Once the application is displayed correctly, submit one of the `Network` links a
 to [@BotFather](https://t.me/botfather). Then, navigate
 to [https://web.telegram.org/k/](https://web.telegram.org/k/), find your bot, and launch the
 Telegram Mini App. This approach provides the full development experience.
-
-## About IIFE
-
-### Dependencies
-
-Some of the packages use other `@tma.js` packages as dependencies. In this case there are 2
-ways of importing them:
-
-1. **By inserting another `script` tag which loads the dependency**.
-   This way makes usage of package with a lot of dependencies almost unreal.
-2. **By inlining these packages**.
-   This way leads to code duplication between several packages using the same package as dependency.
-
-As you can see, there is no optimal solution between both of them. As the additional problem
-developer gets here, is bundler is unable to
-use [tree shaking](https://stackoverflow.com/questions/45884414/what-is-tree-shaking-and-why-would-i-need-it),
-making browser to load the code not used in the application. Imagine using the only 1 function from
-some library like `lodash`, but fully load it.
-
-### Unknown target
-
-The other problem developer can face is IIFE packages are built for the specific browser of specific
-version. So, the package author does not know which target he should choose as long as he doesn't
-know it when creating such package. That's why the the package target should be lowered to support 
-most part of browsers, but this also make final bunlde bigger.
-
-### Conclusion
-
-Unfortunately, developer is unable to avoid these problems when using IIFE format. This is the
-reason why it is recommended to use modern technologies along with ESM format.
-
-### When there is no other choice
-
-First of all, it is required to load the package. Developer could use [JSDelivr](https://www.jsdelivr.com/) 
-to do it:
-
-```html
-
-<head>
-  <script src="https://cdn.jsdelivr.net/npm/@telegram-apps/sdk/dist/index.iife.js"></script>
-</head>
-```
-
-Loaded packages of `@telegram-apps` in IIFE format are accessible by path `window.telegramApps.*`:
-
-```html
-
-<head>
-  <script src="https://cdn.jsdelivr.net/npm/@telegram-apps/sdk/dist/index.iife.js"></script>
-</head>
-<body>
-  <script>
-    var sdk = window.telegramApps.sdk;
-    console.log(sdk.retrieveLaunchData());
-  </script>
-</body>
-```
-
-> ⚠️ In this example we did not specify the exact version of required package. In this case,
-> JSDelivr CDN will return the latest version of the package which in some cases may lead to
-> unexpected behavior. To prevent such case, specify the exact version.
-
-
 
 ## Deploy
 
