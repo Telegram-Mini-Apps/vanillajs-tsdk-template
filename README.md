@@ -1,5 +1,8 @@
 # Vanilla JS example
 
+> [!WARNING]
+> This template is archived and is more likely to be out of date.
+
 > ⚠️ Please, avoid using vanilla JavaScript if possible on Telegram Mini Apps
 > platform. It is better to use ES modules at least.
 
